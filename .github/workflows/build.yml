@@ -1,0 +1,69 @@
+name: Build WSS Windows EXE
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:  # 允许手动触发
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v3
+      with:
+        version: '6.5.0'
+        host: 'windows'
+        target: 'desktop'
+        arch: 'win64_msvc2019_64'
+        dir: '${{ github.workspace }}/qt/'
+        
+    - name: Setup MSVC
+      uses: microsoft/setup-msbuild@v1.1
+      
+    - name: Configure CMake
+      run: |
+        cmake -B build -S . `
+          -DCMAKE_PREFIX_PATH="${{ github.workspace }}/qt/6.5.0/msvc2019_64" `
+          -DCMAKE_BUILD_TYPE=Release
+          
+    - name: Build
+      run: cmake --build build --config Release --parallel
+      
+    - name: Prepare package
+      run: |
+        mkdir WSS-Release
+        cp build/Release/WSS.exe WSS-Release/
+        cp -r signatures WSS-Release/
+        cp README.md WSS-Release/
+        cp QUICKSTART.md WSS-Release/
+        
+    - name: Upload artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: WSS-Windows-EXE
+        path: WSS-Release/
+        
+    - name: Create Release
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      uses: ncipollo/release-action@v1
+      with:
+        artifacts: "WSS-Release/*"
+        token: ${{ secrets.GITHUB_TOKEN }}
+        tag: v1.0.${{ github.run_number }}
+        name: WSS v1.0.${{ github.run_number }}
+        body: |
+          Windows Security Scanner 自动构建版本
+          
+          包含：
+          - WSS.exe (主程序)
+          - signatures/ (病毒签名库)
+          - 使用文档
+          
+          下载后解压即可使用！

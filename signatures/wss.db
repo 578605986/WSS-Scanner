@@ -1,0 +1,12 @@
+# WSS Signature Database
+# Format: hash|name|severity (1-5, 5=highest)
+# This is a sample database for testing
+
+# Example test signatures (these are fake hashes for demonstration)
+e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855|Test.Malware.A|3
+5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8|Test.Malware.B|4
+
+# To add real signatures:
+# 1. Calculate SHA256 of malware samples
+# 2. Add them here with format: hash|name|severity
+# 3. Or use the GUI to add signatures
