@@ -19,14 +19,18 @@ jobs:
           target: 'desktop'
           arch: 'win64_msvc2019_64'
       
-      - uses: microsoft/setup-msbuild@v1.1
+      - name: Setup MSVC
+        uses: microsoft/setup-msbuild@v1.1
+      
+      - name: Configure
+        run: cmake -B build -S . -DCMAKE_PREFIX_PATH="$env:Qt6_DIR" -DCMAKE_BUILD_TYPE=Release
+        shell: pwsh
       
       - name: Build
-        run: |
-          cmake -B build -S . -DCMAKE_BUILD_TYPE=Release
-          cmake --build build --config Release
+        run: cmake --build build --config Release
       
-      - uses: actions/upload-artifact@v4
+      - name: Upload
+        uses: actions/upload-artifact@v4
         with:
           name: WSS-EXE
           path: build/Release/WSS.exe
