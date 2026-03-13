@@ -2,7 +2,7 @@ name: Build WSS Windows EXE
 
 on:
   push:
-    branchs: [ main, master ]
+    branches: [ main, master ]
   workflow_dispatch:
 
 jobs:
@@ -10,10 +10,10 @@ jobs:
     runs-on: windows-latest
     
     steps:
-    - uses: actions/checkout/v4
+    - uses: actions/checkout@v4
     
     - name: Install Qt
-      uses: jurplel/install-qt-action/v3
+      uses: jurplel/install-qt-action@v3
       with:
         version: '6.5.0'
         host: 'windows'
@@ -21,15 +21,16 @@ jobs:
         arch: 'win64_msvc2019_64'
     
     - name: Setup MSVC
-      uses: microsoft/setup-msbuild/v1.1
+      uses: microsoft/setup-msbuild@v1.1
+    
+    - name: Configure CMake
+      run: cmake -B build -S . -DCMAKE_BUILD_TYPE=Release
     
     - name: Build
-      run: |
-        cmake -B build -S . -DCLKE_BUILD_TYPE=Release
-        cmake --build build --config Release --parallel
+      run: cmake --build build --config Release --parallel
     
     - name: Upload EXE
-      uses: actions/upload-artifact/v4
+      uses: actions/upload-artifact@v4
       with:
         name: WSS-Windows-EXE
         path: build/Release/WSS.exe
