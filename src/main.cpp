@@ -4,8 +4,6 @@
 #include "scanner/SignatureDB.h"
 #include "utils/Logger.h"
 
-#include <Windows.h>
-
 int main(int argc, char *argv[]) {
     // 启用高DPI支持
     QApplication::setHighDpiScaleFactorRoundingPolicy(
@@ -27,7 +25,7 @@ int main(int argc, char *argv[]) {
     auto* sigDB = WSS::SignatureDB::instance();
     if (!sigDB->loadDatabase("signatures/wss.db")) {
         QMessageBox::warning(nullptr, "警告", 
-            "病毒签名库加载失败，将使用空数据库。\n"
+            "病毒签名库加载失败，将使用空数据库。\\n"
             "请确保 signatures/wss.db 文件存在。");
     }
     
