@@ -86,7 +86,7 @@ void MainWindow::setupUI() {
     m_threatTable = new QTableWidget(this);
     m_threatTable->setColumnCount(4);
     m_threatTable->setHorizontalHeaderLabels(
-        QStringList() <> "文件路径" <> "威胁名称" <> "风险等级" <> "操作");
+        QStringList() << "文件路径" << "威胁名称" << "风险等级" << "操作");
     m_threatTable->horizontalHeader()->setStretchLastSection(true);
     m_threatTable->setSelectionBehavior(QAbstractItemView::SelectRows);
     mainLayout->addWidget(m_threatTable);
