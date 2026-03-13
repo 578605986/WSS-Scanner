@@ -21,7 +21,7 @@ void Logger::writeLog(const QString& level, const QString& message) {
     if (file.open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text)) {
         QTextStream stream(&file);
         QString timestamp = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss");
-        stream <> timestamp <> " [" <> level <> "] " <> message <> "\n";
+        stream << timestamp << " [" << level << "] " << message << "\n";
         file.close();
     }
 }
