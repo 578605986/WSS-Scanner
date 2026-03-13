@@ -18,37 +18,16 @@ jobs:
           host: 'windows'
           target: 'desktop'
           arch: 'win64_msvc2019_64'
-          dir: '${{ github.workspace }}/qt/'
       
-      - name: Setup MSVC
-        uses: microsoft/setup-msbuild@v1.1
-      
-      - name: Configure CMake
-        shell: pwsh
-        run: |
-          $env:Qt6_DIR = "${{ github.workspace }}/qt/6.5.0/msvc2019_64"
-          cmake -B build -S . -DCMAKE_PREFIX_PATH="$env:Qt6_DIR" -DCMAKE_BUILD_TYPE=Release
+      - uses: microsoft/setup-msbuild@v1.1
       
       - name: Build
-        shell: pwsh
-        run: cmake --build build --config Release
-      
-      - name: Check build output
-        shell: pwsh
         run: |
-          Get-ChildItem -Path build -Recurse -Filter "*.exe" | Select-Object FullName
+          cmake -B build -S . -DCMAKE_BUILD_TYPE=Release
+          cmake --build build --config Release
       
-      - name: Package
-        shell: pwsh
-        run: |
-          New-Item -ItemType Directory -Force -Path WSS-Release
-          Copy-Item build/Release/*.exe WSS-Release/ -ErrorAction SilentlyContinue
-          Copy-Item build/*.exe WSS-Release/ -ErrorAction SilentlyContinue
-          Copy-Item -Recurse signatures WSS-Release/ -ErrorAction SilentlyContinue
-          Get-ChildItem WSS-Release/
-      
-      - name: Upload
+      - name: Upload EXE
         uses: actions/upload-artifact@v4
         with:
-          name: WSS-Windows-EXE
-          path: WSS-Release/
+          name: WSS-EXE
+          path: build/Release/WSS.exe
