@@ -18,13 +18,15 @@ jobs:
           host: 'windows'
           target: 'desktop'
           arch: 'win64_msvc2019_64'
+          dir: '${{ github.workspace }}/qt/'
       
       - name: Setup MSVC
         uses: microsoft/setup-msbuild@v1.1
       
       - name: Configure
-        run: cmake -B build -S . -DCMAKE_PREFIX_PATH="$env:Qt6_DIR" -DCMAKE_BUILD_TYPE=Release
-        shell: pwsh
+        shell: cmd
+        run: |
+          cmake -B build -S . -DCMAKE_PREFIX_PATH="${{ github.workspace }}/qt/6.5.0/msvc2019_64" -DCMAKE_BUILD_TYPE=Release
       
       - name: Build
         run: cmake --build build --config Release
