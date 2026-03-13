@@ -23,16 +23,28 @@ jobs:
       - name: Setup MSVC
         uses: microsoft/setup-msbuild@v1.1
       
-      - name: Configure
-        shell: cmd
+      - name: Configure CMake
+        shell: pwsh
         run: |
-          cmake -B build -S . -DCMAKE_PREFIX_PATH="${{ github.workspace }}/qt/6.5.0/msvc2019_64" -DCMAKE_BUILD_TYPE=Release
+          $env:Qt6_DIR = "${{ github.workspace }}/qt/6.5.0/msvc2019_64"
+          cmake -B build -S . -DCMAKE_PREFIX_PATH="$env:Qt6_DIR" -DCMAKE_BUILD_TYPE=Release
       
-      - name: Build
-        run: cmake --build build --config Release
+      - name: Build with detailed errors
+        shell: pwsh
+        run: |
+          cmake --build build --config Release 2>&1 | Tee-Object -FilePath build.log
+        continue-on-error: true
       
-      - name: Upload
+      - name: Upload build log on failure
         uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: build-log
+          path: build.log
+      
+      - name: Upload EXE on success
+        uses: actions/upload-artifact@v4
+        if: success()
         with:
           name: WSS-EXE
           path: build/Release/WSS.exe
