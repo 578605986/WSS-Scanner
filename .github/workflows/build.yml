@@ -29,22 +29,26 @@ jobs:
           $env:Qt6_DIR = "${{ github.workspace }}/qt/6.5.0/msvc2019_64"
           cmake -B build -S . -DCMAKE_PREFIX_PATH="$env:Qt6_DIR" -DCMAKE_BUILD_TYPE=Release
       
-      - name: Build with detailed errors
+      - name: Build
+        shell: pwsh
+        run: cmake --build build --config Release
+      
+      - name: Check build output
         shell: pwsh
         run: |
-          cmake --build build --config Release 2>&1 | Tee-Object -FilePath build.log
-        continue-on-error: true
+          Get-ChildItem -Path build -Recurse -Filter "*.exe" | Select-Object FullName
       
-      - name: Upload build log on failure
-        uses: actions/upload-artifact@v4
-        if: failure()
-        with:
-          name: build-log
-          path: build.log
+      - name: Package
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path WSS-Release
+          Copy-Item build/Release/*.exe WSS-Release/ -ErrorAction SilentlyContinue
+          Copy-Item build/*.exe WSS-Release/ -ErrorAction SilentlyContinue
+          Copy-Item -Recurse signatures WSS-Release/ -ErrorAction SilentlyContinue
+          Get-ChildItem WSS-Release/
       
-      - name: Upload EXE on success
+      - name: Upload
         uses: actions/upload-artifact@v4
-        if: success()
         with:
-          name: WSS-EXE
-          path: build/Release/WSS.exe
+          name: WSS-Windows-EXE
+          path: WSS-Release/
