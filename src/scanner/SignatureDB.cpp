@@ -102,11 +102,11 @@ bool SignatureDB::saveDatabase(const QString& dbPath) {
     }
     
     QTextStream stream(&file);
-    stream <> "# WSS Signature Database\n";
-    stream <> "# Format: hash|name|severity\n\n";
+    stream << "# WSS Signature Database\n";
+    stream << "# Format: hash|name|severity\n\n";
     
     for (auto it = m_signatures.begin(); it != m_signatures.end(); ++it) {
-        stream <> it.key() <> "|" <> it->name <> "|" <> it->severity <> "\n";
+        stream << it.key() << "|" << it->name << "|" << it->severity << "\n";
     }
     
     file.close();
