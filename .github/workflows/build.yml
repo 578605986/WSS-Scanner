@@ -26,8 +26,20 @@ jobs:
           cmake -B build -S . -DCMAKE_BUILD_TYPE=Release
           cmake --build build --config Release
       
-      - name: Upload EXE
+      - name: Deploy Qt Dependencies
+        run: |
+          $qtBin = "${env:Qt6_DIR}\bin"
+          $exePath = "build\Release\WSS.exe"
+          # 复制必要DLL
+          Copy-Item "$qtBin\Qt6Core.dll" build\Release\
+          Copy-Item "$qtBin\Qt6Gui.dll" build\Release\
+          Copy-Item "$qtBin\Qt6Widgets.dll" build\Release\
+          # 平台插件
+          New-Item -ItemType Directory -Force -Path build\Release\platforms
+          Copy-Item "$qtBin\..\plugins\platforms\qwindows.dll" build\Release\platforms\
+      
+      - name: Upload Package
         uses: actions/upload-artifact@v4
         with:
-          name: WSS-EXE
-          path: build/Release/WSS.exe
+          name: WSS-完整版
+          path: build\Release\
