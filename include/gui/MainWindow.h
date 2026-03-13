@@ -3,6 +3,7 @@
 #include <QMainWindow>
 #include <QThread>
 #include <memory>
+#include "scanner/FileScanner.h"
 
 QT_BEGIN_NAMESPACE
 class QPushButton;
