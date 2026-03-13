@@ -10,7 +10,7 @@ set(CMAKE_AUTOUIC ON)
 # 查找Qt6
 find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets)
 
-# 源文件 - 只包含实际存在的文件
+# 源文件 - 最小可运行版本
 set(SOURCES
     src/main.cpp
     src/scanner/FileScanner.cpp
@@ -54,7 +54,3 @@ if(WIN32)
         WIN32_EXECUTABLE TRUE
     )
 endif()
-
-# 安装
-install(TARGETS WSS DESTINATION bin)
-install(DIRECTORY signatures/ DESTINATION signatures)
